@@ -34,25 +34,24 @@ public class mainClass extends Application {
         if(!fileManager.getThemeDir().exists()){
             fileManager.getThemeDir().mkdir();
         }
+        if(!fileManager.getJavaDir().exists()){
+            fileManager.getJavaDir().mkdir();
+        }
         primaryStage.setTitle("EndideUpdater");
         primaryStage.initStyle(StageStyle.UNDECORATED);
         Group root = new Group();
-        Scene scene = new Scene(root, 600, 400, Color.DARKGRAY);
+        Scene scene = new Scene(root, 400, 100, Color.DARKGRAY);
         Text text = new Text();
         text.setText("Mise a jour du launcher");
-        text.setLayoutX(225);
+        text.setLayoutX(120);
         text.setLayoutY(20);
         progressBar.setLayoutX(0);
-        progressBar.setLayoutY(195);
-        progressBar.setPrefSize(600, 20);
+        progressBar.setLayoutY(40);
+        progressBar.setPrefSize(400, 50);
         root.getChildren().add(text);
         root.getChildren().add(progressBar);
         primaryStage.setScene(scene);
         primaryStage.show();
-        try {
-            update.getThemes("default");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 }

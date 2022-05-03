@@ -12,6 +12,7 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -24,17 +25,17 @@ import javafx.stage.StageStyle;
 public class MainLaunch extends Application {
 	updater updater = new updater();
 	private fileManager fileManager = new fileManager();
-	private Stage primaryStage;
+	public static boolean onInternet = true;
+	private static Stage primaryStage;
     private BorderPane rootLayout;
 	private double xOffset = 0;
 	private double yOffset = 0;
-	@Override
 
+	@Override
 	public void start(Stage stage) {
 		if(new File(fileManager.createGameDir() + File.separator + "launcherConfig.json").exists()){
 			saveManager.getConfigData();
 		}
-
 		this.primaryStage = stage;
         this.primaryStage.setTitle("Endide");
         this.primaryStage.getIcons().add(new Image("img/logo.png"));
@@ -46,31 +47,58 @@ public class MainLaunch extends Application {
 				e.printStackTrace();
 			}
 		}else{
+
+		}
+		if(!saveManager.startupPassword) {
+			try {
+				pageManager.startPage();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}else{
 			try {
 				initSetupLayout();
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
+			rootLayout.setOnMousePressed(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					xOffset = mouseEvent.getSceneX();
+					yOffset = mouseEvent.getSceneY();
+				}
+			});
+			rootLayout.setOnMouseDragged(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					stage.setX(mouseEvent.getScreenX() - xOffset);
+					stage.setY(mouseEvent.getScreenY() - yOffset);
+				}
+			});
 		}
-		rootLayout.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				xOffset = mouseEvent.getSceneX();
-				yOffset = mouseEvent.getSceneY();
-			}
-		});
-		rootLayout.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				stage.setX(mouseEvent.getScreenX() - xOffset);
-				stage.setY(mouseEvent.getScreenY() - yOffset);
-			}
-		});
+		if(!saveManager.startupPassword) {
 
-		if(saveManager.setupIsFinish != true) {
-			setupPage();
-		}else{
-			loginPage();
+		}else {
+			if (saveManager.setupIsFinish != true) {
+				setupPage();
+			} else {
+				loginPage();
+			}
+		}
+		try {
+			updater.internetTest();
+		} catch (IOException e) {
+			Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+			errorAlert.setHeaderText("Pas de connexion Internet, Mais vous pouvez quand même jouer !!!");
+			errorAlert.show();
+			onInternet = false;
+		}
+		if(onInternet == true) {
+			try {
+				updater.getOnlineVersions();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	public void initSetupLayout() throws MalformedURLException {
@@ -110,7 +138,8 @@ public class MainLaunch extends Application {
 	            e.printStackTrace();
 		}
 	}
-	public Stage getPrimaryStage() {
-		return primaryStage;
+	public static void hideLoginPage(){
+		primaryStage.hide();
 	}
+
 }

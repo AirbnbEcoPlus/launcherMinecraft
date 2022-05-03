@@ -36,31 +36,16 @@ public class fileManager {
         public File getRuntimeDir(){
         return new File(createGameDir(), "runtime");
     }
-        public File getServerDir(){
+        public static File getServerDir(){
         return new File(createGameDir(), "servers");
     }
-        public File getServerInstallDir(){
+        public static File getServerInstallDir(){
         return new File(getServerDir(), "install");
     }
         public File getConfigFile(){
         return new File(getServerDir(), "config.properties");
     }
-
-    public void setupServer() throws IOException {
-        if(!getServerDir().exists()){
-            getServerDir().mkdir();
-        }
-        if(!getServerInstallDir().exists()){
-            getServerInstallDir().mkdir();
-        }
-        URL buildToolsUrl = new URL("https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar");
-        File buildTools = new File(getServerInstallDir() + File.separator + "BuildTools.jar");
-        if(!buildTools.exists()){
-            FileUtils.copyURLToFile(buildToolsUrl, buildTools);
-        }
-    }
     public static File getThemeDir(){
-
         return new File(createGameDir(), "themes");
     }
     public static URL getThemes(String fxml, String name) throws MalformedURLException {

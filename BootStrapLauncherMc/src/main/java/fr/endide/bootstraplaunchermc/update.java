@@ -31,7 +31,9 @@ public class update {
         }
 
     }
+    public void getJava(){
 
+    }
     public void getLauncherMcJar() throws IOException {
         double configVersion = 1;
         URL getThemesUrl = new URL("http://api.endide.com:2052/launchermc/getJar");

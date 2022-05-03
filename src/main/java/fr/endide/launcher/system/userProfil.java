@@ -1,26 +1,33 @@
 package fr.endide.launcher.system;
 
-import java.util.ArrayList;
+import javafx.concurrent.Service;
+
 import java.util.List;
 
 public class userProfil {
-    boolean setupIsFinish;
-    String email;
-    String password;
-    List<minecraftUserItem> minecraftUserItems;
-    public userProfil(boolean setupIsFinish, String email, String password, List<minecraftUserItem> minecraftUserItems) {
+    public boolean setupIsFinish;
+    public String email;
+    public String password;
+    boolean startupPassword;
+    public List<minecraftUserItem> minecraftUserItems;
+    public List<minecraftServer> minecraftServersItems;
+    public List<minecraftVersions> minecraftVersionsItems;
+    public userProfil(boolean setupIsFinish, String email, String password, boolean startupPassword,List<minecraftUserItem> minecraftUserItems, List<minecraftServer> minecraftServersItems, List<minecraftVersions> minecraftVersionsItems) {
         this.setupIsFinish = setupIsFinish;
         this.email = email;
         this.password = password;
+        this.startupPassword = startupPassword;
         this.minecraftUserItems = minecraftUserItems;
+        this.minecraftServersItems = minecraftServersItems;
+        this.minecraftVersionsItems = minecraftVersionsItems;
     }
 
     public static class minecraftUserItem {
-        String email;
+        public String email;
         public String username;
-        String token;
-        String uuid;
-        boolean isPremium;
+        public String token;
+        public String uuid;
+        public boolean isPremium;
 
         public minecraftUserItem(String email, String username, String token, String uuid, boolean isPremium) {
              this.email = email;
@@ -29,6 +36,38 @@ public class userProfil {
              this.uuid = uuid;
              this.isPremium = isPremium;
 
+        }
+    }
+    public static class minecraftVersions {
+        public String name;
+        public String version;
+        public String type;
+        public String folder;
+        boolean downloaded;
+
+        public minecraftVersions(String name, String version, String type, String folder, boolean downloaded) {
+            this.name = name;
+            this.version = version;
+            this.type = type;
+            this.folder = folder;
+            this.downloaded = downloaded;
+        }
+    }
+    public static class minecraftServer{
+        public String name;
+        public String ram;
+        public String api;
+        public String version;
+        public String path;
+        public boolean created;
+
+        public minecraftServer(String name, String ram, String api, String version, String path, boolean created){
+            this.name = name;
+            this.ram = ram;
+            this.api = api;
+            this.version = version;
+            this.path = path;
+            this.created = created;
         }
     }
 

@@ -4,12 +4,14 @@ import fr.endide.launcher.system.pageManager;
 import fr.endide.launcher.system.saveManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.util.Duration;
+
+import static java.lang.invoke.MethodHandles.loop;
 
 public class firstSetup {
 McAccountManager mcAccountManager = new McAccountManager();
@@ -37,11 +39,20 @@ McAccountManager mcAccountManager = new McAccountManager();
 
             if (saveManager.getAllAccount().size() != 0) {
                 saveManager.finishSetup(emailField.getText(), passwordField.getText());
+                Alert errorAlert = new Alert(Alert.AlertType.INFORMATION);
+                errorAlert.setHeaderText("Configuration terminer vous pouvez relancer le launcher");
+                errorAlert.show();
+                System.exit(0);
             } else {
-                System.out.println("Vous devez connecter au moins un compte");
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("Vous devez connecter au moins un compte");
+                errorAlert.show();
             }
         } else {
-            System.out.println("tout les champs ne sont pas rempli");
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Tout les champs ne sont pas rempli");
+            errorAlert.show();
+
         }
 
     }
@@ -49,7 +60,10 @@ McAccountManager mcAccountManager = new McAccountManager();
     @FXML
     void addAccountMc(ActionEvent event)  {
         pageManager.mcLoginManagerPage();
-
+        listView.getItems().clear();
+        for (int index = 0; index < saveManager.minecraftItems.size(); index++) {
+            listView.getItems().add(saveManager.minecraftItems.get(index).username);
+        }
     }
 
     @FXML
@@ -57,11 +71,26 @@ McAccountManager mcAccountManager = new McAccountManager();
 
     }
     public void initialize(){
-        listView.getItems().clear();
-        for(int index = 0; index < saveManager.getAllAccount().size(); index++){
-            listView.getItems().add(saveManager.getAllAccount().get(index).username);
+        ScheduledService<Void> refreshList = new ScheduledService<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
 
-        }
+                    @Override
+                    protected Void call() {
+                        listView.getItems().clear();
+                        for (int index = 0; index < saveManager.minecraftItems.size(); index++) {
+                            listView.getItems().add(saveManager.minecraftItems.get(index).username);
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+        refreshList.setPeriod(Duration.seconds(1));
+        refreshList.start();
+
+
     }
 
 }

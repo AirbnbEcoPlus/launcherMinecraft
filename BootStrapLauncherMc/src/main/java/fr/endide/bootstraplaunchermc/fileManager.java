@@ -27,6 +27,9 @@ public class fileManager {
     public URL getGameDir() throws MalformedURLException {
         return Path.of(createGameDir().toString()).toUri().toURL();
     }
+    public File getJavaDir(){
+        return new File(createGameDir(), "java");
+    }
     public String getThemeName(){
         return "default";
     }

@@ -1,19 +1,21 @@
 package fr.endide.launcher.system;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class pageManager {
-
+    private static double xOffset = 0;
+    private static double yOffset = 0;
 
     private static AnchorPane mcLoginManager;
     public static void mcLoginManagerPage() {
@@ -56,12 +58,26 @@ public class pageManager {
         stage.setScene(scene);
         stage.show();
         setPlayPage();
+        rootLayout2.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                xOffset = mouseEvent.getSceneX();
+                yOffset = mouseEvent.getSceneY();
+            }
+        });
+        rootLayout2.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.setX(mouseEvent.getScreenX() - xOffset);
+                stage.setY(mouseEvent.getScreenY() - yOffset);
+            }
+        });
     }
     public static void setPlayPage(){
         FXMLLoader loader = new FXMLLoader();
         try {
             loader.setLocation(fileManager.getThemes("play",fileManager.getThemeName()));
-            AnchorPane playPage = (AnchorPane) loader.load();
+            AnchorPane playPage = loader.load();
             rootLayout2.setCenter(playPage);
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,4 +113,26 @@ public class pageManager {
             e.printStackTrace();
         }
     }
+    static AnchorPane devCreator;
+    public static Stage devCreatorStage;
+    public static void devCreator() throws MalformedURLException {
+        devCreatorStage = new Stage();
+        devCreatorStage.setTitle("Endide");
+        devCreatorStage.getIcons().add(new Image("img/logo.png"));
+        devCreatorStage.initStyle(StageStyle.UNDECORATED);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(fileManager.getThemes("devCreate",fileManager.getThemeName()));
+        try {
+            devCreator = loader.load();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        devCreator.styleProperty().set("-fx-background-color:#515151;");
+        Scene scene = new Scene(devCreator);
+        devCreatorStage.setScene(scene);
+
+        devCreatorStage.show();
+    }
+
 }
