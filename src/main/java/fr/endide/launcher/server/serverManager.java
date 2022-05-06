@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class serverManager {
-    static List<serverProcess> serverProcessList = new ArrayList<>();
-
     public static void setupServer() throws IOException {
         if(!fileManager.getServerDir().exists()){
             fileManager.getServerDir().mkdir();
@@ -36,13 +34,6 @@ public class serverManager {
         }
     }
 
-    public static void syncConfigAndProc(){
-        serverProcessList.clear();
-        for(int index = 0; index < saveManager.serverList.size() ; index++) {
-            serverProcess serverProcessItem = new serverProcess(saveManager.serverList.get(index).name, null);
-            serverProcessList.add(serverProcessItem);
-        }
-    }
     public void createServer(String name, String version, String api, String ram, TextArea consoleArea) throws IOException, InterruptedException {
         File serverPath = new File(fileManager.getServerDir() + File.separator + name);
         Service<Void> createServerService = new Service<Void>(){
@@ -112,71 +103,6 @@ public class serverManager {
         });
         createServerService.start();
     }
-    public static void createServerLaunchService(String name){
-        for(int index = 0; index < serverProcessList.size() ; index++) {
-            if (serverProcessList.get(index).name.equals(name)) {
-                int finalIndex = index;
-                Service<Void> launchServerService = new Service<Void>() {
-                    @Override
-                    protected Task<Void> createTask() {
-                        return new Task<Void>() {
-
-                            @Override
-                            protected Void call() {
-                                TextArea consoleArea = null;
-                                try {
-                                    setupServer();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                String command = "java -jar " + fileManager.getServerDir() + File.separator + name + saveManager.serverList.get(finalIndex).api + "-" + saveManager.serverList.get(finalIndex).version + ".jar";
-                                System.out.println(command);
-                                Process proc = null;
-                                try {
-                                    proc = Runtime.getRuntime().exec(command, null, new File(fileManager.getServerInstallDir() + File.separator + name));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-                                BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-                                String line = "";
-                                while (true) {
-                                    try {
-                                        if (!((line = reader.readLine()) != null)) break;
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    String finalLine = line;
-                                    Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            consoleArea.appendText(finalLine + "\n");
-                                        }
-                                    });
-
-                                }
-                                String errorLine = "";
-                                while (true) {
-                                    try {
-                                        if (!((errorLine = errorReader.readLine()) != null)) break;
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                                    errorAlert.setHeaderText(errorLine);
-                                    errorAlert.show();
-                                }
-                                return null;
-                            }
-                        };
-                    }
-                };
-                serverProcess serverProcess = new serverProcess(name, launchServerService);
-                serverProcessList.remove(index);
-                serverProcessList.add(serverProcess);
-            }
-        }
-    }
     public static void loadServers() {
 
 
@@ -192,21 +118,71 @@ public class serverManager {
         sendButton.setDisable(false);
         for(int index = 0; index < saveManager.serverList.size() ; index++){
             if(saveManager.serverList.get(index).name.equals(name)){
-                consoleArea.appendText("Le serveur est eteint");
-                System.out.println("OKAY");
+
             }
         }
 
     }
     //Commande a finir + Stockage des Reader et Error Mais COMMENT FAIRE ????
     public static void launchServer(String name) throws IOException {
-        for(int index = 0; index < serverProcessList.size(); index++){
-            createServerLaunchService(name);
-            if(serverProcessList.get(index).equals(name)){
-                System.out.println("OKDD");
-                serverProcessList.get(index).proc.start();
-            }
+        for(int index = 0; index < saveManager.serverList.size() ; index++) {
+            if(saveManager.serverList.get(index).name.equals(name)) {
+            int finalIndex = index;
+            Service<Void> launchServerService = new Service<Void>() {
+                @Override
+                protected Task<Void> createTask() {
+                    return new Task<Void>() {
+
+                        @Override
+                        protected Void call() {
+
+                            String command = "java -jar " + saveManager.serverList.get(finalIndex).path + File.separator + saveManager.serverList.get(finalIndex).api + "-" + saveManager.serverList.get(finalIndex).version + ".jar nogui";
+                            System.out.println(command);
+                            Process proc = null;
+                            try {
+                                proc = Runtime.getRuntime().exec(command, null, new File(fileManager.getServerDir() + File.separator + name));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            TextArea consoleArea = new TextArea();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                            BufferedReader errorReader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                            String line = "";
+                            while (true) {
+                                try {
+                                    if (!((line = reader.readLine()) != null)) break;
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                String finalLine = line;
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                    }
+                                });
+
+                            }
+                            String errorLine = "";
+                            while (true) {
+                                try {
+                                    if (!((errorLine = errorReader.readLine()) != null)) break;
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                                errorAlert.setHeaderText(errorLine);
+                                errorAlert.show();
+                            }
+                            return null;
+                        }
+                    };
+                }
+            };
+            launchServerService.start();
+
         }
+    }
 
     }
 }

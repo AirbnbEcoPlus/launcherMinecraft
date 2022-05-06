@@ -45,7 +45,7 @@ public class Dev {
     private TreeView<?> treeView;
 
     public void initialize(){
-        serverManager.syncConfigAndProc();
+
         stopButton.setDisable(true);
         startButton.setDisable(true);
         killButton.setDisable(true);
@@ -56,7 +56,7 @@ public class Dev {
             serverName = newVal;
             serverManager.loadServerDashboard(serverName, consoleArea, treeView, startButton, stopButton, killButton, sendButton);
         });
-        ObservableList<String> servers = FXCollections.observableArrayList(saveManager.serverList.get(1).name, "test");
+        ObservableList<String> servers = FXCollections.observableArrayList("Adrien");
         listServers.setItems(servers);
     }
 

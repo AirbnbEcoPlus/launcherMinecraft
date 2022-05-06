@@ -34,7 +34,7 @@ public class DevCreate {
         versionsMenu.setDisable(true);
         apiMenu.setDisable(true);
         try {
-            serverManager.createServer(nameField.getText(), versionsMenu.getText(), ramMenu.getText(), apiMenu.getText(), consoleArea);
+            serverManager.createServer(nameField.getText(), versionsMenu.getText(), apiMenu.getText(), ramMenu.getText(), consoleArea);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

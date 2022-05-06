@@ -13,7 +13,7 @@ import java.util.List;
 public class saveManager {
     static fileManager fileManager = new fileManager();
     static Gson gson = createGsonInstance();
-    public static boolean setupIsFinish;
+    public static boolean setupIsFinish = false;
     public static String email;
     public static String password;
     public static boolean startupPassword;

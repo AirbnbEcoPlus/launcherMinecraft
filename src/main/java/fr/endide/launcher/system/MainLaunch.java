@@ -35,54 +35,75 @@ public class MainLaunch extends Application {
 	public void start(Stage stage) {
 		if(new File(fileManager.createGameDir() + File.separator + "launcherConfig.json").exists()){
 			saveManager.getConfigData();
+		}else{
 		}
 		this.primaryStage = stage;
         this.primaryStage.setTitle("Endide");
         this.primaryStage.getIcons().add(new Image("img/logo.png"));
         this.primaryStage.initStyle(StageStyle.UNDECORATED);
 		if(saveManager.setupIsFinish != true) {
+			System.out.println("Setup is not finish");
 			try {
 				initSetupLayout();
+				rootLayout.setOnMousePressed(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						xOffset = mouseEvent.getSceneX();
+						yOffset = mouseEvent.getSceneY();
+					}
+				});
+				rootLayout.setOnMouseDragged(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						stage.setX(mouseEvent.getScreenX() - xOffset);
+						stage.setY(mouseEvent.getScreenY() - yOffset);
+					}
+				});
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
-		}else{
+			setupPage();
 
-		}
-		if(!saveManager.startupPassword) {
-			try {
-				pageManager.startPage();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		}else{
-			try {
-				initSetupLayout();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			rootLayout.setOnMousePressed(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouseEvent) {
-					xOffset = mouseEvent.getSceneX();
-					yOffset = mouseEvent.getSceneY();
-				}
-			});
-			rootLayout.setOnMouseDragged(new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent mouseEvent) {
-					stage.setX(mouseEvent.getScreenX() - xOffset);
-					stage.setY(mouseEvent.getScreenY() - yOffset);
-				}
-			});
-		}
-		if(!saveManager.startupPassword) {
 
+
+
+		}else{
+			if(!saveManager.startupPassword) {
+				try {
+					pageManager.startPage();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}else{
+				try {
+					initSetupLayout();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+				rootLayout.setOnMousePressed(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						xOffset = mouseEvent.getSceneX();
+						yOffset = mouseEvent.getSceneY();
+					}
+				});
+				rootLayout.setOnMouseDragged(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						stage.setX(mouseEvent.getScreenX() - xOffset);
+						stage.setY(mouseEvent.getScreenY() - yOffset);
+					}
+				});
+				loginPage();
+			}
+		}
+
+		if(!saveManager.startupPassword) {
 		}else {
 			if (saveManager.setupIsFinish != true) {
-				setupPage();
+
 			} else {
-				loginPage();
+
 			}
 		}
 		try {
