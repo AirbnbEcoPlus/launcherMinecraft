@@ -6,12 +6,15 @@ import fr.endide.launcher.system.pageManager;
 import fr.endide.launcher.server.serverManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+
+import static fr.endide.launcher.server.serverManager.launchServer;
 
 public class Dev {
     public String serverName;
@@ -52,12 +55,16 @@ public class Dev {
         sendButton.setDisable(true);
         consoleField.setDisable(true);
         consoleArea.setDisable(true);
+        listServers.getItems().clear();
+        serverManager.loadServers();
+        for(int index = 0; index < saveManager.serverList.size(); index++){
+            listServers.getItems().add(saveManager.serverList.get(index).name);
+        }
         listServers.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             serverName = newVal;
             serverManager.loadServerDashboard(serverName, consoleArea, treeView, startButton, stopButton, killButton, sendButton);
         });
-        ObservableList<String> servers = FXCollections.observableArrayList("Adrien");
-        listServers.setItems(servers);
+
     }
 
     @FXML
@@ -91,6 +98,8 @@ public class Dev {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
         }
 
         @FXML

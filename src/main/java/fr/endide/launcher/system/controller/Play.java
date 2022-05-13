@@ -8,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 
+import java.io.IOException;
+
 public class Play {
     @FXML
     private MenuButton accountsButton;
@@ -42,7 +44,11 @@ public class Play {
 
     @FXML
     void onClickPlayButton(ActionEvent event) {
-
+        try {
+            updater.downloadMinecraft(versionsButton.getText());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

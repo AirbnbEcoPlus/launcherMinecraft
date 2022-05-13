@@ -2,14 +2,14 @@ package fr.endide.launcher.system.controller;
 
 import fr.endide.launcher.system.pageManager;
 import fr.endide.launcher.system.saveManager;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
+import fr.endide.launcher.system.userProfil;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
-import javafx.util.Duration;
 
 public class Settings {
     @FXML
@@ -19,7 +19,7 @@ public class Settings {
     private Button accountDelButton;
 
     @FXML
-    private ListView<String> accountList;
+    private ListView<userProfil.minecraftUserItem> accountList;
 
     @FXML
     private Button delThemeButton;
@@ -82,12 +82,9 @@ public class Settings {
         }
     }
     public void initialize(){
-
-        accountList.getItems().clear();
-        for (int index = 0; index < saveManager.minecraftItems.size(); index++) {
-            accountList.getItems().add(saveManager.minecraftItems.get(index).username);
-        }
+        ObservableList<userProfil.minecraftUserItem> userItems = FXCollections.observableArrayList(saveManager.minecraftItems);
+        accountList.setItems(userItems);
         startupPassword.setSelected(saveManager.startupPassword);
-
+        accountList.refresh();
     }
 }

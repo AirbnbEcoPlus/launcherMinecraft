@@ -4,10 +4,8 @@ package fr.endide.launcher.system;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
 
-
+import fr.theshark34.openlauncherlib.LaunchException;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -25,12 +23,12 @@ import javafx.stage.StageStyle;
 public class MainLaunch extends Application {
 	updater updater = new updater();
 	private fileManager fileManager = new fileManager();
-	public static boolean onInternet = true;
+	public static boolean onInternet;
 	private static Stage primaryStage;
     private BorderPane rootLayout;
 	private double xOffset = 0;
 	private double yOffset = 0;
-
+launchGame launchGame = new launchGame();
 	@Override
 	public void start(Stage stage) {
 		if(new File(fileManager.createGameDir() + File.separator + "launcherConfig.json").exists()){
@@ -106,6 +104,7 @@ public class MainLaunch extends Application {
 
 			}
 		}
+		//Système non fonctionnel a améliorer
 		try {
 			updater.internetTest();
 		} catch (IOException e) {
@@ -114,13 +113,13 @@ public class MainLaunch extends Application {
 			errorAlert.show();
 			onInternet = false;
 		}
-		if(onInternet == true) {
-			try {
-				updater.getOnlineVersions();
-			} catch (IOException e) {
-				e.printStackTrace();
+		try {
+			updater.getOnlineVersions();
+			} catch (IOException ignored) {
+
 			}
-		}
+
+
 	}
 	public void initSetupLayout() throws MalformedURLException {
 		FXMLLoader loader = new FXMLLoader();

@@ -71,24 +71,11 @@ McAccountManager mcAccountManager = new McAccountManager();
 
     }
     public void initialize(){
-        ScheduledService<Void> refreshList = new ScheduledService<Void>() {
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-
-                    @Override
-                    protected Void call() {
-                        listView.getItems().clear();
-                        for (int index = 0; index < saveManager.minecraftItems.size(); index++) {
-                            listView.getItems().add(saveManager.minecraftItems.get(index).username);
-                        }
-                        return null;
-                    }
-                };
-            }
-        };
-        refreshList.setPeriod(Duration.seconds(1));
-        refreshList.start();
+        listView.getItems().clear();
+        for (int index = 0; index < saveManager.minecraftItems.size(); index++) {
+            listView.getItems().add(saveManager.minecraftItems.get(index).username);
+        }
+        
 
 
     }

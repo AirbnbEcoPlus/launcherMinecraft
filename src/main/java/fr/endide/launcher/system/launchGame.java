@@ -1,23 +1,29 @@
 package fr.endide.launcher.system;
 
 import fr.theshark34.openlauncherlib.LaunchException;
+import fr.theshark34.openlauncherlib.external.ExternalLaunchProfile;
+import fr.theshark34.openlauncherlib.external.ExternalLauncher;
 import fr.theshark34.openlauncherlib.internal.InternalLaunchProfile;
 import fr.theshark34.openlauncherlib.internal.InternalLauncher;
 import fr.theshark34.openlauncherlib.minecraft.*;
 
+import java.io.File;
+
 public class launchGame {
+    fileManager fileManager = new fileManager();
     public void launchGame(String version, String tweaks, String playerUsername, String token, String uuid) throws LaunchException {
-        GameInfos infos = new GameInfos("EndideLauncher", new GameVersion(version, getGameType(version)), GetGameTweaks(tweaks));
+        GameInfos infos = new GameInfos("endideLauncher", new GameVersion(version, GameType.V1_8_HIGHER), GetGameTweaks(tweaks));
+        GameFolder folder = new GameFolder("/assets" , "/libs" , "", "/runtime" + File.separator + "client-" + version + ".jar");
         AuthInfos authInfos = new AuthInfos(playerUsername, token, uuid);
-        InternalLaunchProfile profile = MinecraftLauncher.createInternalProfile(infos, GameFolder.BASIC, authInfos);
-        InternalLauncher launcher = new InternalLauncher(profile);
+        ExternalLaunchProfile profile = MinecraftLauncher.createExternalProfile(infos, folder, authInfos);
+        ExternalLauncher launcher = new ExternalLauncher(profile);
         launcher.launch();
     }
     public GameTweak[] GetGameTweaks(String tweaks){
-        if(tweaks == "optifine"){
+        if(tweaks.equals("optifine")){
             return new GameTweak[] {GameTweak.OPTIFINE};
         }
-        if(tweaks == "forge"){
+        if(tweaks.equals("forge")){
             return new GameTweak[] {GameTweak.FORGE};
         }
         return new GameTweak[0];

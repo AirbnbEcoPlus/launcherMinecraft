@@ -38,6 +38,7 @@ public class userProfil {
 
         }
     }
+
     public static class minecraftVersions {
         public String name;
         public String version;

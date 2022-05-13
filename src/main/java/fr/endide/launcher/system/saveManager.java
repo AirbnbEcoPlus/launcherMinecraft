@@ -39,12 +39,9 @@ public class saveManager {
         email = users.email;
         password = users.password;
         startupPassword = users.startupPassword;
-        for(int index = 0; index < users.minecraftUserItems.size(); index++){
-            minecraftItems.add(users.minecraftUserItems.get(index));
-        }
-        for(int index = 0; index < users.minecraftServersItems.size(); index++){
-            serverList.add(users.minecraftServersItems.get(index));
-        }
+        minecraftItems.addAll(users.minecraftUserItems);
+        serverList.addAll(users.minecraftServersItems);
+        versionsList.addAll(users.minecraftVersionsItems);
         try {
             reader.close();
         } catch (IOException e) {
@@ -75,7 +72,23 @@ public class saveManager {
         }
     }
     //Minecraft Versions
-
+    public static void saveVersion(String name, String version, String type, String folder, boolean created){
+        userProfil.minecraftVersions versionItem = new userProfil.minecraftVersions(name, version, type, folder, created);
+        versionsList.add(versionItem);
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(fileManager.createGameDir() + File.separator + "launcherConfig.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        userProfil profile = new userProfil(setupIsFinish, email, password, startupPassword, minecraftItems, serverList, versionsList);
+        gson.toJson(profile, writer);
+        try {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     //User
     public static void saveUser(String mcEmail, String username, String token, String uuid, boolean isPremium){
         userProfil.minecraftUserItem userItem = new userProfil.minecraftUserItem(mcEmail, username, token , uuid, isPremium);
@@ -97,7 +110,6 @@ public class saveManager {
     public static List<userProfil.minecraftUserItem> getAllAccount(){
         return minecraftItems;
     }
-
 
     public void getOneAccount(String username){
 
