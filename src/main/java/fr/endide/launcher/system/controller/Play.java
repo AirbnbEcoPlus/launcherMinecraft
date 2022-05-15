@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 
@@ -20,8 +22,16 @@ public class Play {
     @FXML
     private MenuButton versionsButton;
 
+    @FXML
+    private ProgressBar progressBar;
+
+    @FXML
+    private Text statusText;
+
     public void initialize(){
         accountsButton.getItems().clear();
+        statusText.setDisable(true);
+        progressBar.setDisable(true);
         for(int index = 0; index < saveManager.getAllAccount().size(); index++){
             MenuItem accountsItem = new MenuItem(saveManager.getAllAccount().get(index).username);
             accountsItem.setOnAction(e -> {
@@ -44,8 +54,9 @@ public class Play {
 
     @FXML
     void onClickPlayButton(ActionEvent event) {
+        progressBar.setDisable(false);
         try {
-            updater.downloadMinecraft(versionsButton.getText());
+            updater.downloadMinecraft(versionsButton.getText(), progressBar);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

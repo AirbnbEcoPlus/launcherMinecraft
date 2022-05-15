@@ -30,8 +30,8 @@ public class fileManager {
         public File getLibsDir(){
             return new File(createGameDir(), "libs");
         }
-        public File getNativesDir(){
-            return new File(createGameDir(), "natives");
+        public File getNativesDir(String version){
+            return new File(createGameDir(), File.separator + "runtime" + File.separator + version + File.separator + "natives");
         }
         public File getRuntimeDir(){
         return new File(createGameDir(), "runtime");

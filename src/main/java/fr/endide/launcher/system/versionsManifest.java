@@ -64,10 +64,12 @@ class version {
 
     public static class downloads {
         client client;
+
         public static class client {
             String sh1;
             String size;
             String url;
+
             public client(String sh1, String size, String url) {
                 this.sh1 = sh1;
                 this.size = size;
@@ -75,27 +77,33 @@ class version {
             }
         }
     }
-    public static class libraries{
+
+    public static class libraries {
         downloads downloads;
         String name;
 
         natives natives;
+
         public libraries(downloads downloads, String name, natives natives) {
             this.downloads = downloads;
             this.name = name;
             this.natives = natives;
         }
 
-        public static class natives{
+        public static class natives {
             String linux;
+            String osx;
             String windows;
-            public natives(String linux, String windows) {
+
+
+            public natives(String linux, String windows, String osx) {
                 this.linux = linux;
+                this.osx = osx;
                 this.windows = windows;
             }
         }
 
-        public static class downloads{
+        public static class downloads {
             artifact artifact;
             classifiers classifiers;
 
@@ -104,10 +112,14 @@ class version {
                 this.classifiers = classifiers;
             }
             public static class classifiers{
-                Map<String, nativesArtifact> classifiers;
 
-                public classifiers(Map<String, nativesArtifact> classifiers) {
-                    this.classifiers = classifiers;
+
+
+                Map<String, nativesArtifact> nativesArtifact;
+
+
+                public classifiers(Map<String, nativesArtifact> nativesArtifact){
+                    this.nativesArtifact = nativesArtifact;
                 }
 
                 public static class nativesArtifact {
@@ -115,6 +127,7 @@ class version {
                     String sha1;
                     String size;
                     String url;
+
                     public nativesArtifact(String hash, String size, String sha1, String url) {
                         this.hash = hash;
                         this.size = size;
@@ -122,15 +135,17 @@ class version {
                         this.url = url;
                     }
                 }
-
-                }
             }
+
+
+
 
             public static class artifact {
                 String path;
                 String sha1;
                 String size;
                 String url;
+
                 public artifact(String path, String sha1, String size, String url) {
                     this.path = path;
                     this.sha1 = sha1;
@@ -142,6 +157,8 @@ class version {
         }
 
     }
+}
+
 
 class assets {
     Map<String, path> objects;

@@ -6,6 +6,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
@@ -17,23 +19,25 @@ import java.util.Map;
 
 public class updater {
     static Gson gson = createGsonInstance();
-    public static Gson createGsonInstance(){
-        return  new GsonBuilder()
+
+    public static Gson createGsonInstance() {
+        return new GsonBuilder()
                 .setPrettyPrinting()
-                .serializeNulls()
-                .disableHtmlEscaping()
                 .create();
     }
+
     public static List<versionsManifest.versions> versionsItems = new ArrayList<>();
     public static versionsManifest.latest latestItems;
 
     static fileManager fileManager = new fileManager();
+
     public void getMinecraftVersion() throws IOException {
         URL getMcVer = new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json");
         URLConnection request = getMcVer.openConnection();
         request.connect();
 
     }
+
     public void getThemes(String name) throws IOException {
         URL getThemesUrl = new URL("http://api.endide.com:2052/launchermc/getThemes" + File.separator + name);
         URLConnection request = getThemesUrl.openConnection();
@@ -54,11 +58,13 @@ public class updater {
         FileUtils.copyURLToFile(new URL(rootobj.get("settings").getAsString()), new File(fileManager.getThemeDir() + File.separator + name + File.separator + "settings.fxml"));
 
     }
+
     public void internetTest() throws IOException {
         URL getVersions = new URL("https://google.com");
         URLConnection request = getVersions.openConnection();
         request.connect();
     }
+
     public void getOnlineVersions() throws IOException {
         URL getVersions = new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json");
         URLConnection request = getVersions.openConnection();
@@ -68,13 +74,14 @@ public class updater {
         JsonObject rootobj = root.getAsJsonObject();
         versionsManifest versionsManifest = gson.fromJson(rootobj, versionsManifest.class);
         latestItems = versionsManifest.latest;
-        for(int index = 0; index < versionsManifest.versions.size(); index++){
-            if(versionsManifest.versions.get(index).type.equals("release")) {
+        for (int index = 0; index < versionsManifest.versions.size(); index++) {
+            if (versionsManifest.versions.get(index).type.equals("release")) {
                 versionsItems.add(versionsManifest.versions.get(index));
             }
         }
     }
-    public static void downloadMinecraft(String versionSelected) throws IOException {
+
+    public static void downloadMinecraft(String versionSelected, ProgressBar progressBar) throws IOException {
         for (int index = 0; index < versionsItems.size(); index++) {
             if (versionsItems.get(index).id.equals(versionSelected)) {
                 URL getVersions = new URL(versionsItems.get(index).url);
@@ -99,27 +106,10 @@ public class updater {
                         return new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
-                                if(!fileManager.getRuntimeDir().exists()) {
-                                    fileManager.getRuntimeDir().mkdir();
-                                }
-                                FileUtils.copyURLToFile((new URL(version.downloads.client.url)), new File(fileManager.getRuntimeDir() + File.separator + version.id + File.separator + "client-"+ version.id +".jar"));
 
-                                if(!fileManager.getLibsDir().exists()) {
-                                    fileManager.getLibsDir().mkdir();
-                                }
-                                for(int index = 0; index < version.libraries.size(); index++){
-                                    FileUtils.copyURLToFile((new URL(version.libraries.get(index).downloads.artifact.url)), new File(fileManager.getLibsDir() + File.separator + version.libraries.get(index).name + ".jar"));
+                                downloadNatives(version);
 
-                                }
-                                if(!fileManager.getNativesDir().exists()) {
-                                    fileManager.getNativesDir().mkdir();
-                                }
-                                if(!fileManager.getAssetsDir().exists()) {
-                                    fileManager.getAssetsDir().mkdir();
-                                }
-                                for(Map.Entry<String, fr.endide.launcher.system.assets.path> objects : assets.objects.entrySet()){
-                                    FileUtils.copyURLToFile(new URL("http://resources.download.minecraft.net/" + objects.getValue().hash.substring(0, 2) + File.separator + objects.getValue().hash), new File(fileManager.getAssetsDir() + File.separator + objects.getKey()));
-                                }
+
                                 return null;
                             }
                         };
@@ -133,16 +123,76 @@ public class updater {
                             Alert errorAlert = new Alert(Alert.AlertType.INFORMATION);
                             errorAlert.setHeaderText("Minecraft a été téléchargé avec succès");
                             errorAlert.show();
-                            saveManager.saveVersion(versionSelected, versionSelected, "vanilla", fileManager.getRuntimeDir().getPath() + File.separator + "client-"+ version.id +".jar",  true);
+                            saveManager.saveVersion(versionSelected, versionSelected, "vanilla", fileManager.getRuntimeDir().getPath() + File.separator + "client-" + version.id + ".jar", true);
                             break;
                     }
                 });
                 downloadMc.start();
             }
+
+
+        }
+
+
+    }
+    public static void downloadRuntime(version version){
+        if (!fileManager.getRuntimeDir().exists()) {
+            fileManager.getRuntimeDir().mkdir();
+        }
+        try {
+            FileUtils.copyURLToFile((new URL(version.downloads.client.url)), new File(fileManager.getRuntimeDir() + File.separator + version.id + File.separator + "client-" + version.id + ".jar"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public static void downloadLibs(version version){
+        if (!fileManager.getLibsDir().exists()) {
+            fileManager.getLibsDir().mkdir();
+        }
+        for (int index = 0; index < version.libraries.size(); index++) {
+            try {
+                FileUtils.copyURLToFile((new URL(version.libraries.get(index).downloads.artifact.url)), new File(fileManager.getLibsDir() + File.separator + version.libraries.get(index).name + ".jar"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
     }
+    public static void downloadAssets(assets assets){
+        if (!fileManager.getAssetsDir().exists()) {
+            fileManager.getAssetsDir().mkdir();
+        }
+        for (Map.Entry<String, fr.endide.launcher.system.assets.path> objects : assets.objects.entrySet()) {
+            try {
+                FileUtils.copyURLToFile(new URL("http://resources.download.minecraft.net/" + objects.getValue().hash.substring(0, 2) + File.separator + objects.getValue().hash), new File(fileManager.getAssetsDir() + File.separator + objects.getKey()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    public static void downloadNatives(version version){
+        if (!fileManager.getNativesDir(version.id).exists()) {
+            fileManager.getNativesDir(version.id).mkdir();
+        }
+
+        for (int index = 0; index < version.libraries.size(); index++) {
+            System.out.println(version.libraries.size());
+            for (String key: version.libraries.get(index).downloads.classifiers.nativesArtifact.keySet()) {
+                System.out.println(key);
+            }
+
+            if(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").url != null) {
+                System.out.println(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").toString());
+                System.out.println(fileManager.getNativesDir(version.id) + File.separator + version.libraries.get(index).name + "-native.jar");
+                try {
+                    FileUtils.copyURLToFile((new URL(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").url)), new File(fileManager.getNativesDir(version.id) + File.separator + version.libraries.get(index).name + "-native.jar"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
 
 
+    }
 }
-
-
