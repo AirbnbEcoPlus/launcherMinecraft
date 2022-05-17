@@ -183,6 +183,7 @@ public class updater {
             }
 
             if(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").url != null) {
+                
                 System.out.println(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").toString());
                 System.out.println(fileManager.getNativesDir(version.id) + File.separator + version.libraries.get(index).name + "-native.jar");
                 try {
