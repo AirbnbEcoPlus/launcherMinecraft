@@ -4,7 +4,7 @@ package fr.endide.launcher.system;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
-import javafx.concurrent.Service;
+import fr.endide.launcher.system.utils.userProfil;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class saveManager {
     }
     //Minecraft Versions
     public static void saveVersion(String name, String version, String type, String folder, boolean created){
-        userProfil.minecraftVersions versionItem = new userProfil.minecraftVersions(name, version, type, folder, created);
+        userProfil.minecraftVersions versionItem = new userProfil.minecraftVersions(name, version, type, folder);
         versionsList.add(versionItem);
         FileWriter writer = null;
         try {
@@ -89,6 +89,7 @@ public class saveManager {
             e.printStackTrace();
         }
     }
+
     //User
     public static void saveUser(String mcEmail, String username, String token, String uuid, boolean isPremium){
         userProfil.minecraftUserItem userItem = new userProfil.minecraftUserItem(mcEmail, username, token , uuid, isPremium);
@@ -106,6 +107,22 @@ public class saveManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public static String getUuid(String name){
+        for(int index = 0; index < minecraftItems.size(); index++){
+            if(minecraftItems.get(index).username.equals(name)){
+                return minecraftItems.get(index).uuid;
+            }
+        }
+        return null;
+    }
+    public static String getToken(String name){
+        for(int index = 0; index < minecraftItems.size(); index++){
+            if(minecraftItems.get(index).username.equals(name)){
+                return minecraftItems.get(index).token;
+            }
+        }
+        return null;
     }
     public static List<userProfil.minecraftUserItem> getAllAccount(){
         return minecraftItems;
@@ -150,6 +167,8 @@ public class saveManager {
             e.printStackTrace();
         }
     }
+
+
 
 }
 

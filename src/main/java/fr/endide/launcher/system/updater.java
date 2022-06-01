@@ -1,13 +1,15 @@
 package fr.endide.launcher.system;
 
 import com.google.gson.*;
+import fr.endide.launcher.system.utils.assets;
+import fr.endide.launcher.system.utils.version;
+import fr.endide.launcher.system.utils.versionsManifest;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.Worker;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
@@ -17,11 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import fr.endide.launcher.system.utils.*;
+
 public class updater {
     static Gson gson = createGsonInstance();
 
     public static Gson createGsonInstance() {
         return new GsonBuilder()
+                .serializeNulls()
                 .setPrettyPrinting()
                 .create();
     }
@@ -106,9 +111,10 @@ public class updater {
                         return new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
-
-                                downloadNatives(version);
-
+                            downloadRuntime(version);
+                            downloadAssets(assets);
+                            downloadLibs(version);
+                            downloadNatives(version);
 
                                 return null;
                             }
@@ -163,7 +169,7 @@ public class updater {
         if (!fileManager.getAssetsDir().exists()) {
             fileManager.getAssetsDir().mkdir();
         }
-        for (Map.Entry<String, fr.endide.launcher.system.assets.path> objects : assets.objects.entrySet()) {
+        for (Map.Entry<String, fr.endide.launcher.system.utils.assets.path> objects : assets.objects.entrySet()) {
             try {
                 FileUtils.copyURLToFile(new URL("http://resources.download.minecraft.net/" + objects.getValue().hash.substring(0, 2) + File.separator + objects.getValue().hash), new File(fileManager.getAssetsDir() + File.separator + objects.getKey()));
             } catch (IOException e) {
@@ -175,23 +181,16 @@ public class updater {
         if (!fileManager.getNativesDir(version.id).exists()) {
             fileManager.getNativesDir(version.id).mkdir();
         }
-
         for (int index = 0; index < version.libraries.size(); index++) {
-            System.out.println(version.libraries.size());
-            for (String key: version.libraries.get(index).downloads.classifiers.nativesArtifact.keySet()) {
-                System.out.println(key);
+            if(version.libraries.get(index).natives != null && version.libraries.get(index).natives.linux != null) {
+                    try {
+                        FileUtils.copyURLToFile(new URL(version.libraries.get(index).downloads.classifiers.get("natives-linux").url), new File(fileManager.getNativesDir(version.id) + File.separator+ version.libraries.get(index).name + ".jar"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
             }
 
-            if(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").url != null) {
-                
-                System.out.println(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").toString());
-                System.out.println(fileManager.getNativesDir(version.id) + File.separator + version.libraries.get(index).name + "-native.jar");
-                try {
-                    FileUtils.copyURLToFile((new URL(version.libraries.get(index).downloads.classifiers.nativesArtifact.get("natives-linux").url)), new File(fileManager.getNativesDir(version.id) + File.separator + version.libraries.get(index).name + "-native.jar"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
 

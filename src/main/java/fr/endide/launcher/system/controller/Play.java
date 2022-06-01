@@ -1,5 +1,6 @@
 package fr.endide.launcher.system.controller;
 
+import fr.endide.launcher.system.MainLaunch;
 import fr.endide.launcher.system.saveManager;
 import fr.endide.launcher.system.updater;
 import javafx.event.ActionEvent;
@@ -29,6 +30,7 @@ public class Play {
     private Text statusText;
 
     public void initialize(){
+
         accountsButton.getItems().clear();
         statusText.setDisable(true);
         progressBar.setDisable(true);
@@ -54,12 +56,14 @@ public class Play {
 
     @FXML
     void onClickPlayButton(ActionEvent event) {
-        progressBar.setDisable(false);
+
+        statusText.setText("Téléchargement de Minecraft..");
         try {
             updater.downloadMinecraft(versionsButton.getText(), progressBar);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
 }

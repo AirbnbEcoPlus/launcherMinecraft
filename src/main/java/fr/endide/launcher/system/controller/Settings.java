@@ -2,7 +2,7 @@ package fr.endide.launcher.system.controller;
 
 import fr.endide.launcher.system.pageManager;
 import fr.endide.launcher.system.saveManager;
-import fr.endide.launcher.system.userProfil;
+import fr.endide.launcher.system.utils.userProfil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

@@ -4,8 +4,6 @@ package fr.endide.launcher.system;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import fr.theshark34.openlauncherlib.LaunchException;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import static fr.endide.launcher.system.updater.versionsItems;
 
 
 public class MainLaunch extends Application {
@@ -39,6 +38,9 @@ launchGame launchGame = new launchGame();
         this.primaryStage.setTitle("Endide");
         this.primaryStage.getIcons().add(new Image("img/logo.png"));
         this.primaryStage.initStyle(StageStyle.UNDECORATED);
+
+
+
 		if(saveManager.setupIsFinish != true) {
 			System.out.println("Setup is not finish");
 			try {
@@ -104,7 +106,6 @@ launchGame launchGame = new launchGame();
 
 			}
 		}
-		//Système non fonctionnel a améliorer
 		try {
 			updater.internetTest();
 		} catch (IOException e) {

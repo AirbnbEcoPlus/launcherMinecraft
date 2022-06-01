@@ -4,16 +4,11 @@ package fr.endide.launcher.system;
 
 
 
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Properties;
 
 public class fileManager {
     static getOS getOS = new getOS();
@@ -49,7 +44,7 @@ public class fileManager {
         return new File(createGameDir(), "themes");
     }
     public static URL getThemes(String fxml, String name) throws MalformedURLException {
-        return Path.of(getThemeDir().toString() + File.separator + name + File.separator + fxml + ".fxml").toUri().toURL();
+        return Path.of(getThemeDir() + File.separator + name + File.separator + fxml + ".fxml").toUri().toURL();
     }
     public static String getThemeName(){
         return "default";

@@ -66,11 +66,6 @@
             <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>fr.theshark34.openlauncherlib</groupId>
-            <artifactId>fr.theshark34.openlauncherlib.minecraft</artifactId>
-            <version>3.0.5</version>
-        </dependency>
-        <dependency>
             <groupId>fr.litarvan</groupId>
             <artifactId>openauth</artifactId>
             <version>1.1.2</version>

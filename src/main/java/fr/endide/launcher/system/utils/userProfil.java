@@ -1,4 +1,4 @@
-package fr.endide.launcher.system;
+package fr.endide.launcher.system.utils;
 
 import javafx.concurrent.Service;
 
@@ -8,7 +8,7 @@ public class userProfil {
     public boolean setupIsFinish;
     public String email;
     public String password;
-    boolean startupPassword;
+    public boolean startupPassword;
     public List<minecraftUserItem> minecraftUserItems;
     public List<minecraftServer> minecraftServersItems;
     public List<minecraftVersions> minecraftVersionsItems;
@@ -44,14 +44,12 @@ public class userProfil {
         public String version;
         public String type;
         public String folder;
-        boolean downloaded;
 
-        public minecraftVersions(String name, String version, String type, String folder, boolean downloaded) {
+        public minecraftVersions(String name, String version, String type, String folder) {
             this.name = name;
             this.version = version;
             this.type = type;
             this.folder = folder;
-            this.downloaded = downloaded;
         }
     }
     public static class minecraftServer{

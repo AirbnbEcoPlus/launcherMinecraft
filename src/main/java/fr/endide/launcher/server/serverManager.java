@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class serverManager {
+    public static String consoleHelp;
     static Map<String, serverProc> listProcess = new HashMap<String, serverProc>();
 
     public static void setupServer() throws IOException {
@@ -169,6 +170,7 @@ public class serverManager {
 
     }
     public static void loadConsole(String name, TextArea consoleArea) {
+        consoleHelp = name;
         ScheduledService<Void> loadConsole = new ScheduledService<Void>(){
             @Override
             protected Task<Void> createTask() {
@@ -178,13 +180,15 @@ public class serverManager {
                     protected Void call()  {
                             Platform.runLater(new Runnable() {
                                 @Override public void run() {
+                                    String savedName = name;
                                         if (listProcess.get(name) != null) {
-                                            consoleArea.setText(listProcess.get(name).console.getText());
+                                            if(consoleHelp == savedName) {
+                                                consoleArea.setText(listProcess.get(name).console.getText());
+                                            }
                                         }
 
                                 }
                             });
-
                         return null;
                     }
                 };
