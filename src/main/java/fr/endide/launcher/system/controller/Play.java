@@ -10,6 +10,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebView;
 
 import java.io.IOException;
 
@@ -19,7 +20,8 @@ public class Play {
 
     @FXML
     private Button playButton;
-
+    @FXML
+    private WebView webView;
     @FXML
     private MenuButton versionsButton;
 

@@ -37,6 +37,7 @@ public class mainClass extends Application {
         if(!fileManager.getJavaDir().exists()){
             fileManager.getJavaDir().mkdir();
         }
+        update.updateLauncher();
         primaryStage.setTitle("EndideUpdater");
         primaryStage.initStyle(StageStyle.UNDECORATED);
         Group root = new Group();

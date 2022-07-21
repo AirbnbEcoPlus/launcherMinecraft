@@ -69,7 +69,7 @@ public class Dev {
 
     @FXML
     void onCreate(ActionEvent event) {
-        if(MainLaunch.onInternet == true) {
+        if(MainLaunch.onInternet) {
             try {
                 pageManager.devCreator();
             } catch (MalformedURLException e) {

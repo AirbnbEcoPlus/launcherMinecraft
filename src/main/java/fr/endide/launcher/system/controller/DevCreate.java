@@ -33,6 +33,7 @@ public class DevCreate {
         ramMenu.setDisable(true);
         versionsMenu.setDisable(true);
         apiMenu.setDisable(true);
+        consoleArea.setDisable(false);
         try {
             serverManager.createServer(nameField.getText(), versionsMenu.getText(), apiMenu.getText(), ramMenu.getText(), consoleArea);
         } catch (IOException e) {

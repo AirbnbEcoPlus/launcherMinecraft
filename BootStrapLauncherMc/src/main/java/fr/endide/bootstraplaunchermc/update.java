@@ -24,11 +24,7 @@ public class update {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            getLauncherMcJar();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
 
     }
     public void getJava(){
@@ -36,7 +32,7 @@ public class update {
     }
     public void getLauncherMcJar() throws IOException {
         double configVersion = 1;
-        URL getThemesUrl = new URL("http://api.endide.com:2052/launchermc/getJar");
+        URL getThemesUrl = new URL("https://api.endide.com/launchermc/getJar");
         URLConnection request = getThemesUrl.openConnection();
         request.connect();
         JsonParser jp = new JsonParser(); //from gson
@@ -48,7 +44,7 @@ public class update {
     }
     public void getThemes(String name) throws IOException {
         textUpdater = "Téléchargements du themes";
-        URL getThemesUrl = new URL("http://api.endide.com:2052/launchermc/getThemes" + File.separator + name);
+        URL getThemesUrl = new URL("https://api.endide.com/launchermc/getThemes" + File.separator + name);
         URLConnection request = getThemesUrl.openConnection();
         request.connect();
         JsonParser jp = new JsonParser(); //from gson

@@ -38,11 +38,7 @@ launchGame launchGame = new launchGame();
         this.primaryStage.setTitle("Endide");
         this.primaryStage.getIcons().add(new Image("img/logo.png"));
         this.primaryStage.initStyle(StageStyle.UNDECORATED);
-
-
-
 		if(saveManager.setupIsFinish != true) {
-			System.out.println("Setup is not finish");
 			try {
 				initSetupLayout();
 				rootLayout.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -108,6 +104,7 @@ launchGame launchGame = new launchGame();
 		}
 		try {
 			updater.internetTest();
+			onInternet = true;
 		} catch (IOException e) {
 			Alert errorAlert = new Alert(Alert.AlertType.ERROR);
 			errorAlert.setHeaderText("Pas de connexion Internet, Mais vous pouvez quand même jouer !!!");

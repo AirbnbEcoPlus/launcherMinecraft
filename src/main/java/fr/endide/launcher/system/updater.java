@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.endide.launcher.system.utils.*;
+import org.apache.commons.io.FilenameUtils;
 
 public class updater {
     static Gson gson = createGsonInstance();
@@ -44,7 +45,7 @@ public class updater {
     }
 
     public void getThemes(String name) throws IOException {
-        URL getThemesUrl = new URL("http://api.endide.com:2052/launchermc/getThemes" + File.separator + name);
+        URL getThemesUrl = new URL("http://api.endide.com/launchermc/getThemes" + File.separator + name);
         URLConnection request = getThemesUrl.openConnection();
         request.connect();
         JsonParser jp = new JsonParser(); //from gson
@@ -104,19 +105,17 @@ public class updater {
                 JsonElement rootAssets = jpAssets.parse(new InputStreamReader((InputStream) requestAssets.getContent()));
                 JsonObject rootObjAssets = rootAssets.getAsJsonObject();
                 assets assets = gson.fromJson(rootObjAssets, assets.class);
-
                 Service<Void> downloadMc = new Service<Void>() {
                     @Override
                     protected Task<Void> createTask() {
                         return new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
-                            downloadRuntime(version);
-                            downloadAssets(assets);
-                            downloadLibs(version);
-                            downloadNatives(version);
-
-                                return null;
+                                downloadRuntime(version);
+                                downloadNatives(version);
+                                downloadLibs(version);
+                                downloadAssets(assets);
+                            return null;
                             }
                         };
                     }
@@ -135,11 +134,7 @@ public class updater {
                 });
                 downloadMc.start();
             }
-
-
         }
-
-
     }
     public static void downloadRuntime(version version){
         if (!fileManager.getRuntimeDir().exists()) {
@@ -150,7 +145,6 @@ public class updater {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
     public static void downloadLibs(version version){
         if (!fileManager.getLibsDir().exists()) {
@@ -158,11 +152,11 @@ public class updater {
         }
         for (int index = 0; index < version.libraries.size(); index++) {
             try {
-                FileUtils.copyURLToFile((new URL(version.libraries.get(index).downloads.artifact.url)), new File(fileManager.getLibsDir() + File.separator + version.libraries.get(index).name + ".jar"));
+                URL url = new URL(version.libraries.get(index).downloads.artifact.url);
+                FileUtils.copyURLToFile(url, new File(fileManager.getLibsDir() + File.separator + FilenameUtils.getName(url.getPath())));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
     public static void downloadAssets(assets assets){
@@ -171,7 +165,7 @@ public class updater {
         }
         for (Map.Entry<String, fr.endide.launcher.system.utils.assets.path> objects : assets.objects.entrySet()) {
             try {
-                FileUtils.copyURLToFile(new URL("http://resources.download.minecraft.net/" + objects.getValue().hash.substring(0, 2) + File.separator + objects.getValue().hash), new File(fileManager.getAssetsDir() + File.separator + objects.getKey()));
+                FileUtils.copyURLToFile(new URL("https://resources.download.minecraft.net/" + objects.getValue().hash.substring(0, 2) + "/" + objects.getValue().hash), new File(fileManager.getAssetsDir() + File.separator + objects.getKey()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -184,7 +178,8 @@ public class updater {
         for (int index = 0; index < version.libraries.size(); index++) {
             if(version.libraries.get(index).natives != null && version.libraries.get(index).natives.linux != null) {
                     try {
-                        FileUtils.copyURLToFile(new URL(version.libraries.get(index).downloads.classifiers.get("natives-linux").url), new File(fileManager.getNativesDir(version.id) + File.separator+ version.libraries.get(index).name + ".jar"));
+                        URL url = new URL(version.libraries.get(index).downloads.classifiers.get("natives-linux").url);
+                        FileUtils.copyURLToFile(url, new File(fileManager.getNativesDir(version.id) + File.separator + FilenameUtils.getName(url.getPath())));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

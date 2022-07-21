@@ -4,7 +4,7 @@ public class getOS {
     private String OS = System.getProperty("os.name").toLowerCase();
     public boolean isWindows() {
 
-        if (OS == "windows 10"){
+        if (OS.equals("windows 10")){
             return true;
         }else {
             return false;
