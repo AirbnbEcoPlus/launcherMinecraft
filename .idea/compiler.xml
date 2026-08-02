@@ -10,9 +10,5 @@
         <module name="BootStrapLauncherMc" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="BootStrapLauncherMc" target="11" />
-      <module name="launcherMinecraft" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>
