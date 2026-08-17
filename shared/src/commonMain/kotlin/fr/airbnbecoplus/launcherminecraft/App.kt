@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import fr.airbnbecoplus.launcherminecraft.ui.components.button.AdaptiveButton
 import org.jetbrains.compose.resources.painterResource
 
 import launcherminecraft.shared.generated.resources.Res
@@ -31,9 +32,7 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
+            AdaptiveButton(onClick = { showContent = !showContent } , "Salut")
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }
                 Column(

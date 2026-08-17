@@ -22,6 +22,8 @@ kotlin {
             implementation(libs.exposed.dao)
             implementation(libs.exposed.jdbc)
             implementation(libs.h2)
+            implementation(libs.fluent.ui)
+            implementation(libs.macos.ui)
 
         }
         commonTest.dependencies {
